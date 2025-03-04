@@ -1,20 +1,26 @@
 # **Project: E-commerce Backend System with PostgreSQL & FastAPI**
 
-## **Goal:**
-Mentees will:
-- **Design a relational database** based on the dataset.
-- **Load the provided CSV data into PostgreSQL.**
-- **Write SQL queries** for business insights.
-- **Expose API endpoints with FastAPI.**
-- **Implement indexing and optimization.**
-- **Use SQLAlchemy ORM for queries and operations.**
-- **Document the API with Swagger UI (`/docs`).**
+## **Prerequisites:**
+Before starting this project, you should:
+- Have basic knowledge of SQL (SELECT, INSERT, JOIN, INDEXING).
+- Understand relational databases and how tables relate via foreign keys.
+- Be familiar with Python, particularly working with Pandas and SQLAlchemy.
+- Have PostgreSQL installed and running on your system.
 
 ---
+## **Goal:**
+- Design a relational database based on the dataset.
+- Load the provided CSV data into PostgreSQL.
+- Write SQL queries for business insights.
+- Expose API endpoints with FastAPI.
+- Implement indexing and optimization.
+- Use SQLAlchemy ORM for queries and operations.
+- Document the API with Swagger UI (`/docs`)
 
+---
 ## **Dataset Information**
-https://github.com/Data-Epic/database-fundamentals/blob/main/E_commerce_dataset.csv.
-This dataset contains **real-world e-commerce transactions** with columns like:
+https://github.com/Data-Epic/database-fundamentals/blob/main/data/ecommerce_dataset.csv.
+This dataset simulates **real-world e-commerce transactions** with columns like:
 - **Order details** (`Order_Date`, `Order_Priority`, `Payment_method`)
 - **Customer information** (`Customer_id`, `Gender`, `Device_Type`, `Customer_Login_Type`)
 - **Product information** (`Product_Category`, `Product`, `Quantity`, `Discount`, `Sales`)
@@ -40,7 +46,7 @@ ecommerce_api/
     │   ├── __init__.py
     │   ├── routes.py
     ├── data/
-    │   ├── ecommerce_dataset.csv  (*Add the Provided Dataset Here*)
+    │   ├── ecommerce_dataset.csv  (*Provided Dataset*)
     ├── scripts/
     │   ├── load_data.py (*Script to load CSV into PostgreSQL*)
 ```
@@ -93,7 +99,7 @@ ecommerce_api/
 ---
 
 ### **🔹 Task 2: Load the CSV Data into PostgreSQL**
-- Write a script (`scripts/load_data.py`) to **import `ecommerce_dataset.csv` into PostgreSQL**.
+- Write a script (`scripts/load_data.py`) to **import `ecommerce_dataset.csv` into the four different PostgreSQL tables created above.**.
 - Ensure proper **data type conversions** (dates, decimals, etc.).
 - **Handle duplicates** using `ON CONFLICT` to avoid inserting the same customers multiple times.
 
@@ -156,9 +162,8 @@ Develop the following REST API endpoints:
 🕒 **Submit by Saturday, March 8th, 2025, 10:00 AM.**
 
 ## **Submission**
-📌 **Share your PR** in the `task-submissions` channel and tag your mentors.  
-📌 **GitHub Repository:** [TBD – Create a repo and link here]  
-
+- Share your PR in the `task-submissions` channel and tag your mentors.  
+- Github Repository: https://github.com/Data-Epic/database-fundamentals
 ---
 
 ## **Rubrics**
