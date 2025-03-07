@@ -1,11 +1,12 @@
 from sqlalchemy import create_engine
-from models import Base
 from sqlalchemy.orm import sessionmaker
+from database_fundamentals.database.models import *
 
-
+Session = None
 def connect_with_db():
-    DATABASE_URL = 'postgresql://mac:test@localhost/ecommerce_db'
-    engine = create_engine(DATABASE_URL, echo=True)
+    database_url = 'postgresql://mac:test@localhost/ecommerce_db'
+    engine = create_engine(database_url)
+    global Session
     Session = sessionmaker(bind=engine)
     Base.metadata.create_all(engine)
 
