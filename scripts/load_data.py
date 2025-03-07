@@ -3,7 +3,7 @@ from database_fundamentals.database.db_setup import *
 
 
 def load_data():
-    # Session = connect_with_db()
+    Session, engine = connect_with_db()
     df = pd.read_csv("../data/ecommerce_dataset.csv", sep=',')
 
     df = df.drop_duplicates()
