@@ -15,7 +15,7 @@ class Base(DeclarativeBase):
 
 class Customer(Base):
     __tablename__ = "customer"
-    id: Mapped[uuid.UUID] = mapped_column(types.Uuid, primary_key=True,server_default=text("gen_random_uuid()"))
+    id: Mapped[uuid.UUID] = mapped_column(types.Uuid, primary_key=True, server_default=text("gen_random_uuid()"))
     customer_id: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     gender: Mapped[str] = mapped_column(String(10), nullable=False)
     device_type: Mapped[str] = mapped_column(String(20), nullable=False)
