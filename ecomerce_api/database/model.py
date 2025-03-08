@@ -1,11 +1,13 @@
 """
-
+Author: Ajeyomi Adeodyin Samuel
+Email: adedoyinsamuel25@gmail.com
+Date: 07-03-2025
 
 
 
 """
 
-from sqlalchemy import Column, String, BigInteger, Date, Float, Integer, VARCHAR, DECIMAL
+from sqlalchemy import Column, Date, Integer, VARCHAR, DECIMAL
 from db_setup import Base
 from utils import db_info
 

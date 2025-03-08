@@ -65,7 +65,6 @@ def load_data_db(data: pd.DataFrame, query: str, con):
     con.close()
 
 
-
 def main():
     read_data()
     transform_data()

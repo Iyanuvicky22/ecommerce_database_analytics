@@ -1,6 +1,11 @@
+"""
+Author: Ajeyomi Adeodyin Samuel
+Email: adedoyinsamuel25@gmail.com
+Date: 07-03-2025
 
 
 
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -25,7 +30,7 @@ SessionLocal = sessionmaker(
 
 Base = declarative_base()
 
-# Db utils
+# db utils
 def get_db():
     db=SessionLocal()
     try:
