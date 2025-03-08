@@ -1,17 +1,16 @@
 """
-Authors:
-    Emmanuel Jolaiya
-    Samuel Adedoyin
+Author: Ajeyomi Adeodyin Samuel
+Email: adedoyinsamuel25@gmail.com
+Date: 07-03-2025
 
-Date:
-    01/10/2024
 
-    # https://docs.sqlalchemy.org/en/14/orm/declarative_tables.html
+https://docs.sqlalchemy.org/en/14/orm/declarative_tables.html
 """
-
 from enum import Enum
 
 class db_info(Enum):
-    TABLE_ENUMERATION = 'enumeration'
-    TABLE_LOCALITY = 'locality'
-    SCHEMA_NAME = 'npc'
+    TABLE_CUSTOMER = 'customers'
+    TABLE_ORDER = 'orders'
+    TABLE_PRODUCT = 'products'
+    TABLE_ORDER_ITEMS = 'order_items'
+    SCHEMA_NAME = 'ecomerce'
