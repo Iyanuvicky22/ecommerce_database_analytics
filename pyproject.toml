@@ -5,12 +5,14 @@ description = ""
 authors = [
     {name = "Damilola Adeniyi",email = "adeniiyidamilola246@gmail.com"}
 ]
+package-mode = false
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "pandas (>=2.2.3,<3.0.0)",
     "sqlalchemy (>=2.0.38,<3.0.0)",
-    "psycopg2 (>=2.9.10,<3.0.0)",
-    "pandas (>=2.2.3,<3.0.0)"
+    "fastapi[standard] (>=0.115.8,<0.116.0)",
+    "psycopg2 (>=2.9.10,<3.0.0)"
 ]
 
 

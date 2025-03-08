@@ -86,7 +86,7 @@ def avg_order_size(conn: Connection):
     return to_float(get_avg_order)
 
 
-def total_profit_revenue(conn: Connection):
+def total_profit_sales(conn: Connection):
     total = query_db(
         "SELECT SUM(sales) AS total_sales, SUM(profit) AS total_profit FROM order_items",
         conn)
@@ -106,11 +106,11 @@ def order_percentage(conn: Connection):
 
 def order_analysis(conn: Connection):
     o_p = order_percentage(conn)
-    t_p_r = total_profit_revenue(conn)
+    t_p_s = total_profit_sales(conn)
     a_o_s = avg_order_size(conn)
     return {
         "order_percentage": o_p,
-        "total_profit_revenue": t_p_r,
+        "total_profit_revenue": t_p_s,
         "avg_order_size": a_o_s
     }
 
@@ -124,11 +124,3 @@ def discount_impact(conn: Connection):
     return summary
 
 
-if __name__ == "__main__":
-    Session, engine = connect_with_db()
-    # with Session.begin() as session:
-    conn = engine.connect()
-    # result = customer_insights(conn)
-    # result = product_performance(conn)
-    result = discount_impact(conn)
-    print(result)
