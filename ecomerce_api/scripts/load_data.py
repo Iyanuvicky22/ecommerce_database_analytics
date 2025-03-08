@@ -1,10 +1,14 @@
 """
 Author: Ajeyomi Adeodyin Samuel
-Email: adedoyin samuel25@gmail.com
-Date: 07/03/2025
+Email: adedoyinsamuel25@gmail.com
+Date: 07-03-2025
 
+
+https://www.geeksforgeeks.org/introduction-to-psycopg2-module-in-python/
 """
 import pandas as pd
+import psycopg2
+import sqlalchemy
 
 def read_data(data_path:str) -> pd.DataFrame:
     """ Read csv data to dataframe"""
@@ -46,14 +50,30 @@ def create_product_dataframe(df):
 def create_orderitems_dataframe(df):
     """Extract data for the order items table"""
     columns = ["quantity","discount","sales","profit","shipping_cost"]
-    orderitems_df = df[columns]
-    return orderitems_df
+    order_items_df = df[columns]
+    return order_items_df
+
+def load_data_db(data: pd.DataFrame, query: str, con):
+    """Load data into the database using an SQL query."""
+    cur = con.cursor()
+    
+    for _, row in data.iterrows():
+        cur.execute(query, tuple(row))  # Pass row data as a tuple
+
+    con.commit()
+    cur.close()
+    con.close()
 
 
-def load_data_db(data:pd.DataFrame):
-    pass
 
-
+def main():
+    read_data()
+    transform_data()
+    create_customer_dataframe
+    create_order_dataframe
+    create_orderitems_dataframe
+    create_product_dataframe
+    load_data_db()
 
 
 
