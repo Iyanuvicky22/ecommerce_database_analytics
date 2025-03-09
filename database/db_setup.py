@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from database_fundamentals.database.models import *
 import logging
 from sqlalchemy.exc import SQLAlchemyError
-
+import psycopg2
 
 def connect_with_db():
     try:

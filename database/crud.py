@@ -1,8 +1,7 @@
 from decimal import Decimal
-
+from sqlalchemy.orm import Session
 from database_fundamentals.database.db_setup import *
-from sqlalchemy import func
-from sqlalchemy import text, Connection, CursorResult
+from sqlalchemy import text, Connection, CursorResult, func, desc, Engine, case
 
 
 def query_db(query: str, conn: Connection) -> CursorResult:
@@ -16,14 +15,14 @@ def to_float(value) -> float:
 
 
 # Customer Insights
-def customer_insights(conn: Connection):
-    total_customers = query_db('SELECT COUNT(*) FROM customer', conn).scalar()
-    customer_web_device = query_db("SELECT COUNT(*) FROM customer WHERE device_type ILIKE 'Web'", conn).scalar()
-    customer_mobile_device = query_db("SELECT COUNT(*) FROM customer WHERE device_type ILIKE 'Mobile'", conn).scalar()
-    customer_login_member = query_db("SELECT COUNT(*) FROM customer WHERE login_type ILIKE 'Member'", conn).scalar()
-    customer_login_guest = query_db("SELECT COUNT(*) FROM customer WHERE login_type ILIKE 'Guest'", conn).scalar()
-    percentage_member = int(customer_login_member) / int(total_customers)
-    percentage_guest = int(customer_login_guest) / int(total_customers)
+def customer_insights(session: Session):
+    total_customers = session.query(Customer).count()
+    customer_web_device = session.query(Customer).filter(Customer.device_type.ilike('Web')).count()
+    customer_mobile_device = session.query(Customer).filter(Customer.device_type.ilike('Mobile')).count()
+    customer_login_member = session.query(Customer).filter(Customer.login_type.ilike('Member')).count()
+    customer_login_guest = session.query(Customer).filter(Customer.login_type.ilike('Guest')).count()
+    percentage_member = customer_login_member / total_customers
+    percentage_guest = customer_login_guest / total_customers
     return {"total_customers": total_customers,
             "web_customer": customer_web_device,
             "mobile_customer": customer_mobile_device,
@@ -31,45 +30,55 @@ def customer_insights(conn: Connection):
             "percentage_guest": percentage_guest}
 
 
-def top_product_by_sales(conn: Connection):
-    top_5_product_by_sales = query_db(
-        "SELECT p.product_name, SUM(sales) AS total_sales FROM order_items oi JOIN products p ON oi.product_id = p.id "
-        "GROUP BY p.id, p.product_name ORDER BY total_sales DESC LIMIT 5",
-        conn)
+def top_product_by_sales(session: Session):
+    top_5_product_by_sales = (session.query(
+        Products.product_name,
+        func.sum(OrderItems.sales).label("total_sales")
+    ).join(Products, OrderItems.product_id == Products.id)
+                              .group_by(Products.id, Products.product_name)
+                              .order_by(desc('total_sales'))
+                              .limit(5))
 
     summary = [{column: to_float(value) for column, value in row._mapping.items()}
                for row in top_5_product_by_sales.all()]
     return summary
 
 
-def top_product_by_profit(conn: Connection):
-    top_5_product_by_sales = query_db(
-        "SELECT p.product_name, SUM(profit) AS total_profit FROM order_items oi JOIN products p ON oi.product_id = "
-        "p.id GROUP BY p.id, p.product_name ORDER BY total_profit DESC LIMIT 5",
-        conn)
+def top_product_by_profit(session: Session):
+    top_5_product_by_profit = (session.query(
+        Products.product_name,
+        func.sum(OrderItems.profit).label("total_profit")
+    ).join(Products, OrderItems.product_id == Products.id)
+                               .group_by(Products.id, Products.product_name)
+                               .order_by(desc('total_profit'))
+                               .limit(5))
 
     summary = [{column: to_float(value) for column, value in row._mapping.items()}
-               for row in top_5_product_by_sales.all()]
+               for row in top_5_product_by_profit.all()]
     return summary
 
 
-def top_product_categories_by_revenue(conn: Connection):
-    top_3_product_category_by_revenue = query_db(
-        "SELECT product_category, SUM(total_sales) AS total_category_sales FROM (SELECT p.product_category, "
-        "SUM(sales) AS total_sales FROM order_items oi JOIN products p ON oi.product_id = p.id GROUP BY p.id, "
-        "p.product_category ORDER BY total_sales DESC )GROUP BY product_category ORDER BY total_category_sales DESC "
-        "LIMIT 3",
-        conn)
+def top_product_categories_by_revenue(session: Session):
+    subquery = (session.query(
+        Products.product_category,
+        func.sum(OrderItems.sales).label("total_sales")
+    ).join(Products, OrderItems.product_id == Products.id)
+                .group_by(Products.id, Products.product_category)
+                .subquery()
+                )
+    top_3_product_category_by_revenue = (session.query(
+        subquery.c.product_category, func.sum(subquery.c.total_sales).label("total_category_sales")
+    ).group_by(subquery.c.product_category).order_by(desc("total_category_sales")).limit(3))
 
     summary = [{column: to_float(value) for column, value in row._mapping.items()}
                for row in top_3_product_category_by_revenue.all()]
     return summary
 
 
-def product_performance(conn: Connection):
-    t_p_b_p = top_product_by_profit(conn)
-    t_p_b_s = top_product_by_sales(conn)
-    t_p_c_b_r = top_product_categories_by_revenue(conn)
+def product_performance(session: Session):
+    t_p_b_p = top_product_by_profit(session)
+    t_p_b_s = top_product_by_sales(session)
+    t_p_c_b_r = top_product_categories_by_revenue(session)
     return {
         "top_product_by_profit": t_p_b_p,
         "top_product_by_sales": t_p_b_s,
@@ -77,37 +86,52 @@ def product_performance(conn: Connection):
     }
 
 
-def avg_order_size(conn: Connection):
-    get_avg_order = query_db(
-        "SELECT ROUND(AVG(total_quantity),2) as avg_quantity FROM (SELECT order_id, SUM(quantity) AS total_quantity "
-        "FROM order_items GROUP BY order_id)",
-        conn).scalar()
+def using_sql_alchemy(session: Session):
+    total = (session.query(func.sum(OrderItems.sales).label("total_sales"), func.sum(OrderItems.profit)
+                           .label("total_profit")))
+    summary = [{column: to_float(value) for column, value in row._mapping.items()}
+               for row in total.all()]
+    print(summary)
+
+
+def avg_order_size(session: Session):
+    subquery = (session.query(OrderItems.order_id, func.avg(OrderItems.quantity).label("total_quantity"))
+                .group_by(OrderItems.order_id)).subquery()
+    get_avg_order = session.query(
+        func.round(func.avg(subquery.c.total_quantity), 2)
+    ).scalar()
 
     return to_float(get_avg_order)
 
 
-def total_profit_sales(conn: Connection):
-    total = query_db(
-        "SELECT SUM(sales) AS total_sales, SUM(profit) AS total_profit FROM order_items",
-        conn)
+def total_profit_sales(session: Session):
+    total = (session.query(func.sum(OrderItems.sales).label("total_sales"), func.sum(OrderItems.profit)
+                           .label("total_profit")))
     summary = [{column: to_float(value) for column, value in row._mapping.items()}
                for row in total.all()]
     return summary
 
 
-def order_percentage(conn: Connection):
-    percent = query_db(
-        "SELECT ROUND((SUM(CASE WHEN order_priority = 'High' OR order_priority = 'Critical'  THEN 1 ELSE 0 END) * "
-        "100.0) / COUNT(*),2) AS order_percentage FROM orders",
-        conn).scalar()
+def order_percentage(session: Session):
+    percent = session.query(
+        func.round(
+            (func.sum(
+                case(
+                    (Orders.order_priority.in_(['High', 'Critical']), 1),
+                    else_=0
+                )
+            ) * 100.0) / func.count('*'),
+            2
+        ).label('order_percentage')
+    ).select_from(Orders).scalar()
 
     return to_float(percent)
 
 
-def order_analysis(conn: Connection):
-    o_p = order_percentage(conn)
-    t_p_s = total_profit_sales(conn)
-    a_o_s = avg_order_size(conn)
+def order_analysis(session: Session):
+    o_p = order_percentage(session)
+    t_p_s = total_profit_sales(session)
+    a_o_s = avg_order_size(session)
     return {
         "order_percentage": o_p,
         "total_profit_revenue": t_p_s,
@@ -115,10 +139,15 @@ def order_analysis(conn: Connection):
     }
 
 
-def discount_impact(conn: Connection):
-    total = query_db(
-        "SELECT discount, SUM(sales) AS total_sales FROM order_items GROUP BY discount ORDER BY total_sales DESC",
-        conn)
+def discount_impact(session: Session):
+    total = (
+        session.query(
+            OrderItems.discount,
+            func.sum(OrderItems.sales).label('total_sales')
+        )
+        .group_by(OrderItems.discount)
+        .order_by(desc('total_sales'))
+    )
     summary = [{column: to_float(value) for column, value in row._mapping.items()}
                for row in total.all()]
     return summary

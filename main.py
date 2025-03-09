@@ -10,10 +10,6 @@ async def root():
     return {"message": "Welcome to Damilola Adeniyi Database fundamental"}
 
 
-# @app.get("/")
-# async def get_customers():
-#     get_all_customers(Session)
-#
 @app.get("/customers/")
 def get_all_customers(page: int = 1, size: int = 10):
     try:
@@ -179,12 +175,12 @@ def get_all_products(page: int = 1, size: int = 10):
         }
 
 
-def get_engine() -> Engine:
+def get_session() -> Session:
     try:
         Session, engine = connect_with_db()
-        if engine is None:
+        if Session is None:
             raise "Failed to connect to database"
-        return engine
+        return Session()
     except Exception as e:
         raise "Failed to connect to database"
 
@@ -192,10 +188,9 @@ def get_engine() -> Engine:
 @app.get("/analytics/top-products/")
 def get_top_products():
     try:
-        engine = get_engine()
-        with engine.connect() as conn:
-            top_products = product_performance(conn)
-            engine.dispose()
+        session = get_session()
+        top_products = product_performance(session)
+        session.close()
 
         return {
             "message": "Products fetched",
@@ -212,19 +207,17 @@ def get_top_products():
         }
 
 
-
 @app.get("/analytics/revenue/")
 def get_total_profit_revenue():
     try:
-        engine = get_engine()
-        with engine.connect() as conn:
-            total__revenue = order_analysis(conn)
-            engine.dispose()
-            return {
-                "message": "Products fetched",
-                "success": True,
-                "data": total__revenue,
-            }
+        session = get_session()
+        total__revenue = order_analysis(session)
+        session.close()
+        return {
+            "message": "Products fetched",
+            "success": True,
+            "data": total__revenue,
+        }
     except Exception as e:
         logging.error(f"Unexpected error in get_total_profit_revenue: {str(e)}")
         return {
@@ -237,10 +230,9 @@ def get_total_profit_revenue():
 @app.get("/analytics/discount-impact/")
 def get_discount_impact():
     try:
-        engine = get_engine()
-        with engine.connect() as conn:
-            impact = discount_impact(conn)
-        engine.dispose()
+        session = get_session()
+        impact = discount_impact(session)
+        session.close()
 
         return {
             "message": "Discount impact data fetched successfully",
