@@ -9,8 +9,8 @@ https://docs.sqlalchemy.org/en/14/orm/declarative_tables.html
 from enum import Enum
 
 class db_info(Enum):
-    TABLE_CUSTOMER = 'customers'
-    TABLE_ORDER = 'orders'
-    TABLE_PRODUCT = 'products'
-    TABLE_ORDER_ITEMS = 'order_items'
+    TABLE_CUSTOMER = 'customer'
+    TABLE_ORDER = 'order'
+    TABLE_PRODUCT = 'product'
+    TABLE_ORDER_ITEMS = 'order_item'
     SCHEMA_NAME = 'ecomerce'
