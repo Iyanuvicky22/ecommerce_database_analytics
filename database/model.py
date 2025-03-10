@@ -9,7 +9,7 @@ https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html
 https://stackoverflow.com/questions/6017895/select-table-from-other-schema
 https://thegirlsynth.hashnode.dev/mastering-sqlalchemy-relationships-exploring-the-backpopulates-parameter-and-different-relationship-types
 """
-from sqlalchemy import Column, Date, Integer, VARCHAR, Numeric, ForeignKey
+from sqlalchemy import Column, Date, Integer, VARCHAR, DECIMAL, ForeignKey
 from sqlalchemy.orm import relationship
 from db_setup import Base
 from utils import db_info
@@ -40,8 +40,8 @@ class Order(Base):
     order_priority = Column(VARCHAR(10))
     payment_method = Column(VARCHAR(20)) 
 
-    customer = relationship("Customer", back_populates="order")
-    order_items = relationship("OrderItem", back_populates="order")
+    customer = relationship("Customer", back_populates="orders")
+    order_items = relationship("OrderItem", back_populates="orders")
 
 class Product(Base):
     __tablename__ = db_info.TABLE_PRODUCT.value
@@ -60,10 +60,11 @@ class OrderItem(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     order_id = Column(Integer, ForeignKey(f'{schema}.order.id'), nullable=False)	
     product_id = Column(Integer, ForeignKey(f'{schema}.product.id'), nullable=False)
-    quantity = Column(Numeric(10, 2))
-    sales = Column(Numeric(10, 2))
-    profit = Column(Numeric(10, 2))
-    shipping_cost = Column(Numeric(10, 2))
+    quantity = Column(Integer)
+    discount = Column(DECIMAL(5, 2))
+    sales = Column(DECIMAL(10, 2))
+    profit = Column(DECIMAL(10, 2))
+    shipping_cost = Column(DECIMAL(10, 2))
 
-    order = relationship("Order", back_populates="order_item")
-    product = relationship("Product", back_populates="order_item")  
+    orders = relationship("Order", back_populates="order_items")
+    product = relationship("Product", back_populates="order_items")  
