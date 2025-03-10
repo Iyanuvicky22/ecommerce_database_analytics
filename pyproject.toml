@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "database-fundamentals"
+version = "0.1.0"
+description = ""
+authors = ["sammygis <adedoyinsamuel25@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.115.11"
+pandas = "^2.2.3"
+uvicorn = "^0.34.0"
+sqlalchemy = "^2.0.38"
+psycopg2 = "^2.9.10"
+black = "^25.1.0"
+makefile = "^1.1.0"
+pylint = "^3.3.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
