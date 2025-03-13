@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+<<<<<<< HEAD
 from database_fundamentals.database.crud import *
 from sqlalchemy import Engine
 
@@ -238,3 +239,11 @@ def get_discount_impact():
             "success": False,
             "data": None
         }
+=======
+from api.routes import router
+
+app = FastAPI(title="E-commerce Backend API", docs_url="/docs")
+
+# Include API routes
+app.include_router(router)
+>>>>>>> main
