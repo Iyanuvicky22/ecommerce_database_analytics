@@ -13,11 +13,9 @@ async def root():
 @app.get("/customers/")
 def get_all_customers(page: int = 1, size: int = 10):
     try:
-        Session, engine = connect_with_db()
-        if Session is None:
-            raise "Failed to connect to database"
+        session = get_session()
         offset = (page - 1) * size
-        filter_customers = Session().query(Customer).offset(offset).limit(size)
+        filter_customers = session.query(Customer).offset(offset).limit(size)
         customer_list = [
             {"id": customer.id,
              "customer_id": customer.customer_id,
@@ -27,7 +25,7 @@ def get_all_customers(page: int = 1, size: int = 10):
              }
             for customer in filter_customers
         ]
-        Session().close()
+        session.close()
         return {
             "message": "Customers fetched",
             "success": True,
@@ -49,17 +47,15 @@ def get_all_customers(page: int = 1, size: int = 10):
 @app.get("/customers/{customer_id}")
 def get_customers_by_customer_id(customer_id):
     try:
-        Session, engine = connect_with_db()
-        if Session is None:
-            raise "Failed to connect to database"
-        filter_customers = Session().query(Customer).filter_by(customer_id=customer_id).scalar()
+        session = get_session()
+        filter_customers = session.query(Customer).filter_by(customer_id=customer_id).scalar()
         customer = {"id": filter_customers.id,
                     "customer_id": filter_customers.customer_id,
                     "gender": filter_customers.gender,
                     "device_type": filter_customers.device_type,
                     "login_type": filter_customers.login_type
                     }
-        Session().close()
+        session.close()
         return {
             "message": "Customer fetched",
             "success": True,
@@ -77,11 +73,9 @@ def get_customers_by_customer_id(customer_id):
 @app.get("/orders/")
 def get_all_orders(page: int = 1, size: int = 10):
     try:
-        Session, engine = connect_with_db()
-        if Session is None:
-            raise "Failed to connect to database"
+        session = get_session()
         offset = (page - 1) * size
-        filter_orders = Session().query(Orders).offset(offset).limit(size)
+        filter_orders = session.query(Orders).offset(offset).limit(size)
         order_list = [
             {
                 "id": order.id,
@@ -92,7 +86,7 @@ def get_all_orders(page: int = 1, size: int = 10):
             }
             for order in filter_orders
         ]
-        Session().close()
+        session.close()
         return {
             "message": "Orders fetched",
             "success": True,
@@ -114,10 +108,8 @@ def get_all_orders(page: int = 1, size: int = 10):
 @app.get("/orders/{order_id}")
 def get_order_by_order_id(order_id):
     try:
-        Session, engine = connect_with_db()
-        if Session is None:
-            raise "Failed to connect to database"
-        filter_orders = Session().query(Orders).filter_by(id=order_id).scalar()
+        session = get_session()
+        filter_orders = session.query(Orders).filter_by(id=order_id).scalar()
         order = {
             "id": filter_orders.id,
             "customer_id": filter_orders.customer_id,
@@ -125,7 +117,7 @@ def get_order_by_order_id(order_id):
             "order_priority": filter_orders.order_priority,
             "payment_method": filter_orders.payment_method
         }
-        Session().close()
+        session.close()
         return {
             "message": "Order fetched",
             "success": True,
