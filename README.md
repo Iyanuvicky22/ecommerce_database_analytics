@@ -39,6 +39,11 @@ This project provides a comprehensive API for accessing and analyzing e-commerce
    ```bash
    pip install .
    ```
+## Database table schema
+This is how my tables relate with one another
+
+![API Documentation Screenshot](screenshot/db-schema.png)
+
 
 ## Configuration
 

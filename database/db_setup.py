@@ -7,7 +7,7 @@ import psycopg2
 
 def connect_with_db():
     try:
-        database_url = 'postgresql://mac:test@localhost/ecommerce_db'
+        database_url = 'postgresql://username:password@localhost/ecommerce_db'
         engine = create_engine(database_url)
         Session = sessionmaker(bind=engine)
         Base.metadata.create_all(engine)
