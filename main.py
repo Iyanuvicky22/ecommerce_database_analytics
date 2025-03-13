@@ -1,4 +1,7 @@
+from fastapi import FastAPI
+from api.routes import router
 
+app = FastAPI(title="E-commerce Backend API", docs_url="/docs")
 
-from database.crud import create_table
-from scripts.load_data import etl_pipeline
+# Include API routes
+app.include_router(router)
