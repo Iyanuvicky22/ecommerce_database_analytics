@@ -1,31 +1,14 @@
 """
 Database Analysis for Business Insights
-
 """
 from decimal import Decimal
-from sqlalchemy.orm import Session
-from sqlalchemy import text, Connection, CursorResult, func, desc, case
+from sqlalchemy import func, desc, case
 from database.db_setup import CustomersTable, Products, OrdersTable
 from database.db_setup import OrderItemsTable
+from database.db_setup import connect_db
 
-
-def query_db(query: str, conn: Connection) -> CursorResult:
-    """
-    Create a query to the database using session connection.
-    Args:
-        query (str): _description_
-        conn (Connection): _description_
-
-    Returns:
-        CursorResult: Returns database rows via the .Row class,
-            which provides additional API features and behaviors on
-            top of the raw data returned by the DBAPI.
-            Through the use of filters such as the .Result.scalars method,
-            other kinds of objects may also be returned.
-    """
-    sql = text(query)
-    results = conn.execute(sql)
-    return results
+# Defining Session and Engine
+Session, engine = connect_db()
 
 
 def to_float(value) -> float:
@@ -41,7 +24,7 @@ def to_float(value) -> float:
     return float(value) if isinstance(value, Decimal) else value
 
 
-# Customer Insights
+# CUSTOMER INSIGHTS ANALYSIS
 def customer_insights(session: Session):
     """
     Customer table insights.
@@ -60,8 +43,10 @@ def customer_insights(session: Session):
         CustomersTable.login_type.ilike('Member')).count()
     customer_login_guest = session.query(CustomersTable).filter(
         CustomersTable.login_type.ilike('Guest')).count()
-    percentage_member = customer_login_member / total_customers
-    percentage_guest = customer_login_guest / total_customers
+    percentage_member = f'{round(customer_login_member / total_customers,
+                                 2) * 100}%'
+    percentage_guest = f'{round(customer_login_guest / total_customers,
+                                2) * 100}%'
     return {"total_customers": total_customers,
             "web_customer": customer_web_device,
             "mobile_customer": customer_mobile_device,
@@ -69,14 +54,20 @@ def customer_insights(session: Session):
             "percentage_guest": percentage_guest}
 
 
+# PRODUCTS INSIGHTS ANALYSIS
 def top_product_by_sales(session: Session):
     """
-
+    Selecting top 5 products by sales
     Args:
-        session (Session): _description_
-
+        session (Session): Connection Session
+        SQL syntax: select p.product_name,sum(o.sales) as total_sales
+                    from products p
+                    join orderitemstable o on o.id = p.id
+                    group by p.id, p.product_name
+                    order_by total_sales desc
+                    limit 5;
     Returns:
-        _type_: _description_
+        list: Dict summary of top 5 products and sales.
     """
     top_5_product_by_sales = (session.query(
         Products.product_name,
@@ -94,12 +85,18 @@ def top_product_by_sales(session: Session):
 
 def top_product_by_profit(session: Session):
     """
-
+    Selecting top 5 profitable products.
     Args:
-        session (Session): _description_
+        session (Session): Connection Session 
+        SQL Syntax: select p.product_name, sum(o.profit) as total_profit
+                    from products p
+                    join orderitemstable o on o.id = p.id
+                    group by p.id, p.product_name
+                    order by total_profits desc
+                    limit 5;
 
     Returns:
-        _type_: _description_
+        list: Dictionary summary of top 5 products by profits.
     """
     top_5_product_by_profit = (session.query(
         Products.product_name,
@@ -117,12 +114,22 @@ def top_product_by_profit(session: Session):
 
 def top_product_categories_by_revenue(session: Session):
     """
-
+    Selecting top 3 categories by revenue generated.
     Args:
-        session (Session): _description_
+        session (Session): Connection Session
+        SQL Syntax: select c.product_category, sum(c.total_sales)
+                            as total_category_sales
+                    from  (select p.product_category, sum(o.sales)
+                            as total_sales
+                    from products p
+                    join orderitemstable o on o.id = p.id
+                    group by p.id, p.product_category) as c
+                    group by c.product_category
+                    order by total_category_sales desc
+                    limit 3;
 
     Returns:
-        _type_: _description_
+        list: Dict summary of top 3 products categories by revenue.
     """
     subquery = (session.query(
         Products.product_category,
@@ -144,60 +151,61 @@ def top_product_categories_by_revenue(session: Session):
 
 def product_performance(session: Session):
     """
-
+    Returning all Products insights.
     Args:
-        session (Session): _description_
+        session (Session): Connection Session
 
     Returns:
-        _type_: _description_
+        list: Dict summary of products insights.
     """
-    t_p_b_p = top_product_by_profit(session)
-    t_p_b_s = top_product_by_sales(session)
-    t_p_c_b_r = top_product_categories_by_revenue(session)
+    products_per_profits = top_product_by_profit(session)
+    products_per_sales = top_product_by_sales(session)
+    products_per_category = top_product_categories_by_revenue(session)
     return {
-        "top_product_by_profit": t_p_b_p,
-        "top_product_by_sales": t_p_b_s,
-        "top_product_categories_by_revenue": t_p_c_b_r
+        "top_product_by_profit": products_per_profits,
+        "top_product_by_sales": products_per_sales,
+        "top_product_categories_by_revenue": products_per_category
     }
 
 
-def using_sql_alchemy(session: Session):
-    """
-
-    Args:
-        session (Session): _description_
-    """
-
-    total = (session.query(func.sum(OrderItemsTable.sales).label("total_sales"),
-                           func.sum(OrderItemsTable.profit)
-                           .label("total_profit")))
-    summary = [{column: to_float(value) for column,
-                value in row._mapping.items()}
-               for row in total.all()]
-    print(summary)
-
-
+# ORDER INSIGHTS ANALYSIS
 def avg_order_size(session: Session):
     """
-    MSsa
+    Calculates average order per quantity of item.
     Args:
         session (Session): _description_
+        SQL Syntax: select round(avg(average_quantity),2)
+                    from 
+                    (select order_id, avg(quantity) as average_quantity
+                    group by order_id);
 
     Returns:
-        _type_: _description_
+        float: Average order per quantity
     """
     subquery = (session.query(OrderItemsTable.order_id, func.avg(
-                OrderItemsTable.quantity).label("total_quantity"))
-                .group_by(OrderItemsTable.order_id)).subquery()
-
+                OrderItemsTable.quantity).label(
+                    "average_quantity")).group_by(
+                        OrderItemsTable.order_id)).subquery()
     get_avg_order = session.query(
-        func.round(func.avg(subquery.c.total_quantity), 2)
+        func.round(func.avg(subquery.c.average_quantity), 2)
     ).scalar()
     return to_float(get_avg_order)
 
 
 def total_profit_sales(session: Session):
-    total = (session.query(func.sum(OrderItemsTable.sales).label("total_sales"),
+    """
+    Total profit sales function
+    Args:
+        session (Session): Connection Session
+        SQL Syntax: select sum(sales) as total_sales,
+                           sum(profit) as total profit
+                    from OrderItemsTable;
+
+    Returns:
+        list: Dictionary of total sales and price
+    """
+    total = (session.query(func.sum(OrderItemsTable.sales).label(
+                           "total_sales"),
                            func.sum(OrderItemsTable.profit)
                            .label("total_profit")))
     summary = [{column: to_float(value) for column,
@@ -210,10 +218,15 @@ def order_percentage(session: Session):
     """
 
     Args:
-        session (Session): _description_
+        session (Session): Connection Session
+        SQL Syntax: select round(sum(case when order_priority in
+                    ('High', 'Critical') then 1
+                        else 0
+                    end) * 100.0) / count(*), 2) as order_percentage
+                    from OrdersTable;
 
     Returns:
-        _type_: _description_
+        float: Percentage of successful orders.
     """
     percent = session.query(
         func.round(
@@ -239,16 +252,17 @@ def order_analysis(session: Session):
     Returns:
         _type_: _description_
     """
-    o_p = order_percentage(session)
-    t_p_s = total_profit_sales(session)
-    a_o_s = avg_order_size(session)
+    order_percent = order_percentage(session)
+    profit_sales = total_profit_sales(session)
+    average_order = avg_order_size(session)
     return {
-        "order_percentage": o_p,
-        "total_profit_revenue": t_p_s,
-        "avg_order_size": a_o_s
+        "order_percentage": order_percent,
+        "total_profit_revenue": profit_sales,
+        "avg_order_size": average_order
     }
 
 
+# DISCOUNT IMPACT ANALYSIS
 def discount_impact(session: Session):
     """
 
@@ -270,3 +284,30 @@ def discount_impact(session: Session):
                 value in row._mapping.items()}
                for row in total.all()]
     return summary
+
+
+if __name__ == '__main__':
+
+    # Customers Analysis Insights
+    cus_insights = customer_insights(session=Session(bind=engine))
+    print('CUSTOMER INSIGHTS!!!')
+    for key, value in cus_insights.items():
+        print(key, ":", value)
+
+    # Products Analysis Insights
+    products_insights = product_performance(session=Session(bind=engine))
+    print('\n\nPRODUCT INSIGHTS!!!')
+    for key, value in products_insights.items():
+        print(key, value, '\n')
+
+    # Order Analysis Insights
+    order_insights = order_analysis(session=Session())
+    print('\nORDER ANALYSIS INSIGHTS')
+    for key, value in order_insights.items():
+        print(key, value)
+
+    # Discount Impact Analysis
+    dis_impact = discount_impact(session=Session())
+    print('DISCOUNT IMPACT ANALYSIS')
+    for dis in dis_impact:
+        print('Discount Effect %s', dis)

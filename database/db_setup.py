@@ -14,7 +14,7 @@ def connect_db():
     Setting up database connection.
     """
     try:
-        engine = create_engine(URL, echo=True)
+        engine = create_engine(URL, echo=False)
         Session = sessionmaker(bind=engine)
         Base.metadata.create_all(engine)
         # session = Session()

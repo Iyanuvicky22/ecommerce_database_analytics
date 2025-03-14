@@ -1,8 +1,11 @@
+"""
+FastAPI Interface for Database Fundamentals Project
+"""
+import logging
+from sqlalchemy import Engine
 from fastapi import FastAPI
 from database.crud import *
 from database.db_setup import *
-from sqlalchemy import Engine
-import logging
 
 app = FastAPI()
 
@@ -14,12 +17,22 @@ async def root():
 
 @app.get("/customers/")
 def get_all_customers(page: int = 1, size: int = 10):
+    """
+    Getting customers information.
+    Args:
+        page (int, optional): _description_. Defaults to 1.
+        size (int, optional): _description_. Defaults to 10.
+
+    Returns:
+        _type_: _description_
+    """
     try:
         Session, engine = connect_db()
         if Session is None:
             raise "Failed to connect to database"
         offset = (page - 1) * size
-        filter_customers = Session().query(CustomersTable).offset(offset).limit(size)
+        filter_customers = Session().query(
+            CustomersTable).offset(offset).limit(size)
         customer_list = [
             {"id": customer.id,
              "customer_id": customer.customer_id,
@@ -40,7 +53,7 @@ def get_all_customers(page: int = 1, size: int = 10):
             },
         }
     except Exception as e:
-        logging.error(f"Unexpected error in get_all_customers: {str(e)}")
+        logging.error("Unexpected error in get_all_customers:%s", str(e))
         return {
             "message": "An unexpected error occurred",
             "success": False,
@@ -54,7 +67,8 @@ def get_customers_by_customer_id(customer_id):
         Session, engine = connect_db()
         if Session is None:
             raise "Failed to connect to database"
-        filter_customers = Session().query(CustomersTable).filter_by(customer_id=customer_id).scalar()
+        filter_customers = Session().query(CustomersTable).filter_by(
+            customer_id=customer_id).scalar()
         customer = {"id": filter_customers.id,
                     "customer_id": filter_customers.customer_id,
                     "gender": filter_customers.gender,
@@ -68,7 +82,7 @@ def get_customers_by_customer_id(customer_id):
             "data": customer,
         }
     except Exception as e:
-        logging.error(f"Unexpected error in get_all_products: {str(e)}")
+        logging.error("Unexpected error in get_all_products: %s", {str(e)})
         return {
             "message": "An unexpected error occurred",
             "success": False,

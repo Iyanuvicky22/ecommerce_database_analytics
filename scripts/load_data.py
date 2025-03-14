@@ -1,7 +1,6 @@
 """
 Data Loading into Database
 """
-# import uuid
 import pandas as pd
 from database.db_setup import connect_db, CustomersTable, Products
 from database.db_setup import OrderItemsTable, OrdersTable
@@ -9,6 +8,7 @@ from database.db_setup import OrderItemsTable, OrdersTable
 # Setting Dataframe Display Criteria
 pd.set_option('display.max_columns', None)
 
+#
 FILEPATH = 'data/ecommerce_dataset.csv'
 
 
@@ -24,10 +24,11 @@ def load_data():
     database_df = pd.read_csv(FILEPATH)
     # Treating Missing Values
     database_df = database_df.dropna().reset_index()
+    # Duplicates Identification
+    print(database_df.duplicated().sum())
     print(database_df.head(2))
 
     with Session.begin() as session:
-        # session.autoflush = True
         for _, row in database_df.iterrows():
             customer = session.query(CustomersTable).filter_by(
                        customer_id=str(row['Customer_Id'])
@@ -40,7 +41,6 @@ def load_data():
                     login_type=row['Customer_Login_type']
                                                )
                 session.add(customer)
-                # session.flush()
 
             product = session.query(Products).filter_by(
                       product_category=row['Product_Category'],
@@ -52,7 +52,6 @@ def load_data():
                     product_name=row['Product']
                                         )
                 session.add(product)
-                # session.flush()
 
             orders = OrdersTable(
                 customer_id=customer.customer_id,
@@ -61,7 +60,6 @@ def load_data():
                 payment_method=row['Payment_method']
                                         )
             session.add(orders)
-            # session.flush()
 
             order_item = OrderItemsTable(
                 order_id=orders.id,
@@ -73,7 +71,6 @@ def load_data():
                 shipping_cost=row['Shipping_Cost']
                                                 )
             session.add(order_item)
-            # session.flush()
         session.commit()
 
 

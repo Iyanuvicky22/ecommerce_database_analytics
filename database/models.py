@@ -2,7 +2,7 @@
 Tables Creation
 """
 from sqlalchemy import ForeignKey, Column, Integer
-from sqlalchemy import String, Date, DECIMAL
+from sqlalchemy import String, Date, DECIMAL, Index
 from sqlalchemy.orm import relationship, backref, declarative_base
 
 Base = declarative_base()
@@ -41,6 +41,11 @@ class OrdersTable(Base):
     payment_method = Column(String(20))
     orders_ids = relationship('OrderItemsTable', backref=backref('Orders'))
 
+    # Creating an index on 'customer_id' column
+    __table_args__ = (
+        Index('idx_order_customer', 'customer_id'),
+        )
+
 
 class Products(Base):
     """
@@ -74,3 +79,8 @@ class OrderItemsTable(Base):
     sales = Column(DECIMAL(10, 2))
     profit = Column(DECIMAL(10, 2))
     shipping_cost = Column(DECIMAL(10, 2))
+
+    # Creating an index on 'product_id' column
+    __table_args__ = (
+        Index("idx_product_sales", 'product_id'),
+    )
