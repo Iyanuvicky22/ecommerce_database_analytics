@@ -7,7 +7,6 @@ from sqlalchemy.orm import relationship, backref, declarative_base
 
 Base = declarative_base()
 
-
 class CustomersTable(Base):
     """
     Customer Table Definition Class

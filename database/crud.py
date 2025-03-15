@@ -287,7 +287,6 @@ def discount_impact(session: Session):
 
 
 if __name__ == '__main__':
-
     # Customers Analysis Insights
     cus_insights = customer_insights(session=Session(bind=engine))
     print('CUSTOMER INSIGHTS!!!')
