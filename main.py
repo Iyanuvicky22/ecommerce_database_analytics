@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """
 FastAPI Interface for Database Fundamentals Project
 """
@@ -262,3 +263,12 @@ def get_discount_impact():
             "success": False,
             "data": None
         }
+=======
+from fastapi import FastAPI
+from api.routes import router
+
+app = FastAPI(title="E-commerce Backend API", docs_url="/docs")
+
+# Include API routes
+app.include_router(router)
+>>>>>>> 7395a4a75b210c7aee5889ae024bdee5af5b6fad
