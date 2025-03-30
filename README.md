@@ -4,7 +4,6 @@ As a data engineer for an e-commerce website, you are given a CSV dataset contai
 
 ## Prerequisites:
 Before starting this project, you should:
-
 - Have basic knowledge of SQL (SELECT, INSERT, JOIN, INDEXING).
 - Understand relational databases and how tables relate via foreign keys.
 - Be familiar with Python, particularly working with Pandas, FASTAPI and SQLAlchemy.
@@ -19,102 +18,99 @@ Before starting this project, you should:
 6) Use SQLAlchemy ORM for queries and operations.
 7) Document the API with Swagger UI (/docs)
 
-**Dataset Information**
-https://github.com/Data-Epic/database-fundamentals/blob/main/data/ecommerce_dataset.csv. 
-This dataset simulates real-world e-commerce transactions with columns like:
-
 ## Database Schema
 - Order details (Order_Date, Order_Priority, Payment_method)
 - Customer information (Customer_id, Gender, Device_Type, Customer_Login_Type)
-- Product information (Product_Category, Product, Quantity, Discount, Sales)
-- Financial information (Profit, Shipping_cost)
+- Product information (Product_Category, Product)
+- Financial information (Quantity, Discount, Sales, Profit, Shipping_cost)
 
 ## Project Structure
-
 ```
 ecommerce_api/
     ├── .gitignore
-    ├── .env.example
     ├── README.md
     ├── main.py
     ├── pyproject.toml
     ├── poetry.lock
     ├── database/
     │   ├── __init__.py
-    │   ├── models.py
-    │   ├── crud.py
-    │   ├── db_setup.py
+    │   ├── models.py (*Models[database tables], relationships and indexes creation.)
+    │   ├── crud.py   (*Database queries for insights.*)
+    │   ├── db_setup.py  (*Database setup and connection.*)
     ├── data/
     │   ├── ecommerce_dataset.csv  (*Provided Dataset*)
     ├── scripts/
+    │   ├── __init__.py
     │   ├── load_data.py (*Script to load CSV into PostgreSQL*)
+    ├── tests/
+    │   ├── __init__.py
+    │   ├── test_load_data.py (*Testing the load_data script.*)
+    ├── images/
+    │   ├── Ecommerce Database Project Process Map.jpg
+    │   ├── ecommerce database schema [MConverter.eu].png
 ```
 
-### Data Architecture
+### Project Process Map
+![alt text](<images/Ecommerce Database Project Process Map.jpg>)
+
+### Database Schema and Relationships
 ![alt text](<images/ecommerce database schema [MConverter.eu].png>)
 
-### Data Modelling
-![alt text](<images/Project map (1) [MConverter.eu].jpg>)
 
-## Tasks
-
-### **🔹 Task 1: Define the PostgreSQL Database Schema**  
-Create a database named ecommerce_db.  
-Define tables in SQLAlchemy ORM:
-
-### **🔹 Task 2: Load the CSV Data into PostgreSQL**
-Write a script (scripts/load_data.py) to import ecommerce_dataset.csv \
-into the four different PostgreSQL tables created above..\
-Ensure proper data type conversions (dates, decimals, etc.).\
-Handle duplicates using ON CONFLICT \ 
-to avoid inserting the same customers multiple times.\
-
-### **🔹 Task 3: Write SQL Queries for Business Insights**
-Write SQL queries to analyze e-commerce performance:
-
-
+### INSIGHTS GLEANED FROM THE DATABASE.
 #### 1️⃣ Customer Insights
-
 Total number of unique customers.\
 Number of customers per device type (Web/Mobile).\
-Percentage of members vs. guest users.\
+Percentage of members vs. guest users.
 
 #### 2️⃣ Product Performance
-
 Top 5 best-selling products based on sales.\
 Top 3 product categories with the highest revenue.\
-Products with the highest profit margins.\
+Products with the highest profit margins.
 
 #### 3️⃣ Order Analysis
-
 Average order size (quantity per order).\
 Total revenue and profit.\
-Percentage of orders placed with High or Critical priority.\
+Percentage of orders placed with High or Critical priority.
 
 #### 4️⃣ Discount Impact
-
 Does higher discount % lead to more sales?\
-(Hint: Compare Sales vs. Discount using GROUP BY discount)*\
+(Hint: Compare Sales vs. Discount using GROUP BY discount)*
 
 
-### **🔹 Task 4: Expose API Endpoints with FastAPI**
-Develop the following REST API endpoints:
+### **🔹API Endpoints with FastAPI**
 
 **Endpoint	             Method	      Description**
-*/customers/*	            GET	    Get all customers\
-*/customers/{customer_id}*	GET   	Get details of a specific customer\
-*/orders/*	                GET	    Get all orders\
-*/orders/{order_id}*        GET	    Get details of a specific order\
-*/products/*	            GET	    Get all products\
-*/analytics/top-products/*	GET	    Get top-selling products\
-*/analytics/revenue/*	    GET	    Get total revenue & profit\
+```
+*/customers/*	            GET	    Get all customers
+*/customers/{customer_id}*	GET   	Get details of a specific customer
+*/orders/*	                GET	    Get all orders
+*/orders/{order_id}*        GET	    Get details of a specific order
+*/products/*	            GET	    Get all products
+*/analytics/top-products/*	GET	    Get top-selling products
+*/analytics/revenue/*	    GET	    Get total revenue & profit
+```
 
-**Use SQLAlchemy ORM to interact with PostgreSQL.**\
-**Document all endpoints in Swagger UI (/docs).**\
-
-### **🔹 Task 5: Implement Indexing & Query Optimization**
-Create an index on high-frequency search columns:\
+### **🔹Implemented Indexing & Query Optimization**
 CREATE INDEX idx_order_customer ON Orders(customer_id);\
-CREATE INDEX idx_product_sales ON OrderItems(product_id);\
-Explain how indexing improves query performance.\
-Use EXPLAIN ANALYZE to compare indexed vs. non-indexed queries.\
+CREATE INDEX idx_product_sales ON OrderItems(product_id);
+
+
+## Interacting with the project
+### Clone the PR
+`git clone https://github.com/Data-Epic/database-fundamentals.git`
+
+### Run FastAPI
+Run `fastapi dev main.py` from the command line
+
+### Examples
+1) FastAPI endpoint structure.
+![alt text](<images/FastAPI structure.png>)
+
+### Dependencies
+`polars (>=1.24.0,<2.0.0)`,\
+`pandas (>=2.2.3,<3.0.0)`,\
+`sqlalchemy (>=2.0.38,<3.0.0)`,\
+`psycopg2 (>=2.9.10,<3.0.0)`,\
+`fastapi (>=0.115.11,<0.116.0)`,\
+`dotenv (>=0.9.9,<0.10.0)`

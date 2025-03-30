@@ -1,5 +1,9 @@
 """
 Database Analysis for Business Insights
+
+Name: Arowosegbe Victor Iyanuoluwa\n
+Email: Iyanuvicky@gmail.com\n
+GitHub: https://github.com/Iyanuvicky22/projects
 """
 from decimal import Decimal
 from sqlalchemy import func, desc, case
@@ -11,7 +15,7 @@ from database.db_setup import connect_db
 Session, engine = connect_db()
 
 
-def to_float(value) -> float:
+def to_float(item) -> float:
     """
     Converts decimal values to float type.
 
@@ -21,11 +25,11 @@ def to_float(value) -> float:
     Returns:
         float: float data type.
     """
-    return float(value) if isinstance(value, Decimal) else value
+    return float(item) if isinstance(item, Decimal) else value
 
 
 # CUSTOMER INSIGHTS ANALYSIS
-def customer_insights(session: Session):
+def customer_insights(session) -> dict:
     """
     Customer table insights.
     Args:
@@ -55,7 +59,7 @@ def customer_insights(session: Session):
 
 
 # PRODUCTS INSIGHTS ANALYSIS
-def top_product_by_sales(session: Session):
+def top_product_by_sales(session) -> list:
     """
     Selecting top 5 products by sales
     Args:
@@ -83,7 +87,7 @@ def top_product_by_sales(session: Session):
     return summary
 
 
-def top_product_by_profit(session: Session):
+def top_product_by_profit(session) -> list:
     """
     Selecting top 5 profitable products.
     Args:
@@ -112,7 +116,7 @@ def top_product_by_profit(session: Session):
     return summary
 
 
-def top_product_categories_by_revenue(session: Session):
+def top_product_categories_by_revenue(session) -> list:
     """
     Selecting top 3 categories by revenue generated.
     Args:
@@ -149,7 +153,7 @@ def top_product_categories_by_revenue(session: Session):
     return summary
 
 
-def product_performance(session: Session):
+def product_performance(session) -> dict:
     """
     Returning all Products insights.
     Args:
@@ -169,13 +173,13 @@ def product_performance(session: Session):
 
 
 # ORDER INSIGHTS ANALYSIS
-def avg_order_size(session: Session):
+def avg_order_size(session) -> float:
     """
     Calculates average order per quantity of item.
     Args:
         session (Session): _description_
         SQL Syntax: select round(avg(average_quantity),2)
-                    from 
+                    from
                     (select order_id, avg(quantity) as average_quantity
                     group by order_id);
 
@@ -192,7 +196,7 @@ def avg_order_size(session: Session):
     return to_float(get_avg_order)
 
 
-def total_profit_sales(session: Session):
+def total_profit_sales(session) -> list:
     """
     Total profit sales function
     Args:
@@ -214,9 +218,9 @@ def total_profit_sales(session: Session):
     return summary
 
 
-def order_percentage(session: Session):
+def order_percentage(session) -> float:
     """
-
+    Query to check and get the percentage of succesful orders
     Args:
         session (Session): Connection Session
         SQL Syntax: select round(sum(case when order_priority in
@@ -243,7 +247,7 @@ def order_percentage(session: Session):
     return to_float(percent)
 
 
-def order_analysis(session: Session):
+def order_analysis(session) -> dict:
     """
 
     Args:
@@ -263,7 +267,7 @@ def order_analysis(session: Session):
 
 
 # DISCOUNT IMPACT ANALYSIS
-def discount_impact(session: Session):
+def discount_impact(session) -> list:
     """
 
     Args:
@@ -288,13 +292,13 @@ def discount_impact(session: Session):
 
 if __name__ == '__main__':
     # Customers Analysis Insights
-    cus_insights = customer_insights(session=Session(bind=engine))
+    cus_insights = customer_insights(session=Session())
     print('CUSTOMER INSIGHTS!!!')
     for key, value in cus_insights.items():
         print(key, ":", value)
 
     # Products Analysis Insights
-    products_insights = product_performance(session=Session(bind=engine))
+    products_insights = product_performance(session=Session())
     print('\n\nPRODUCT INSIGHTS!!!')
     for key, value in products_insights.items():
         print(key, value, '\n')

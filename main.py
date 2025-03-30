@@ -1,38 +1,46 @@
-<<<<<<< HEAD
 """
 FastAPI Interface for Database Fundamentals Project
+
+Name: Arowosegbe Victor Iyanuoluwa\n
+Email: Iyanuvicky@gmail.com\n
+GitHub: https://github.com/Iyanuvicky22/projects
 """
 import logging
-from sqlalchemy import Engine
 from fastapi import FastAPI
 from database.crud import *
 from database.db_setup import *
 
 app = FastAPI()
+session, engine = connect_db()
 
 
 @app.get("/")
 async def root():
+    """
+    Welcome Message
+
+    Returns:
+        dict: Welcome message
+    """
     return {"message": "Arowosegbe Victor's Database fundamental project"}
 
 
 @app.get("/customers/")
-def get_all_customers(page: int = 1, size: int = 10):
+def get_all_customers(page: int = 1, size: int = 25):
     """
-    Getting customers information.
+    Getting customers information. Default is first 25 customers.
     Args:
         page (int, optional): _description_. Defaults to 1.
-        size (int, optional): _description_. Defaults to 10.
+        size (int, optional): _description_. Defaults to 25.
 
     Returns:
-        _type_: _description_
+        dict: Dict response of successful/failed api call.
     """
     try:
-        Session, engine = connect_db()
-        if Session is None:
+        if session is None:
             raise "Failed to connect to database"
         offset = (page - 1) * size
-        filter_customers = Session().query(
+        filter_customers = session().query(
             CustomersTable).offset(offset).limit(size)
         customer_list = [
             {"id": customer.id,
@@ -43,7 +51,7 @@ def get_all_customers(page: int = 1, size: int = 10):
              }
             for customer in filter_customers
         ]
-        Session().close()
+        session().close()
         return {
             "message": "Customers fetched",
             "success": True,
@@ -64,11 +72,15 @@ def get_all_customers(page: int = 1, size: int = 10):
 
 @app.get("/customers/{customer_id}")
 def get_customers_by_customer_id(customer_id):
+    """
+    Getting customers info by their id.
+    Returns:
+        dict: Dict of successful/failed api response
+    """
     try:
-        Session, engine = connect_db()
-        if Session is None:
+        if session is None:
             raise "Failed to connect to database"
-        filter_customers = Session().query(CustomersTable).filter_by(
+        filter_customers = session().query(CustomersTable).filter_by(
             customer_id=customer_id).scalar()
         customer = {"id": filter_customers.id,
                     "customer_id": filter_customers.customer_id,
@@ -76,7 +88,7 @@ def get_customers_by_customer_id(customer_id):
                     "device_type": filter_customers.device_type,
                     "login_type": filter_customers.login_type
                     }
-        Session().close()
+        session().close()
         return {
             "message": "Customer fetched",
             "success": True,
@@ -92,13 +104,20 @@ def get_customers_by_customer_id(customer_id):
 
 
 @app.get("/orders/")
-def get_all_orders(page: int = 1, size: int = 10):
+def get_all_orders(page: int = 1, size: int = 50):
+    """
+    Getting all orders. Default is first 50 orders.
+    Args:
+        page (int, optional): _description_. Defaults to 1.
+        size (int, optional): _description_. Defaults to 50.
+    Returns:
+        dict: Dict of successful/failed api response
+    """
     try:
-        Session, engine = connect_db()
-        if Session is None:
+        if session is None:
             raise "Failed to connect to database"
         offset = (page - 1) * size
-        filter_orders = Session().query(OrdersTable).offset(offset).limit(size)
+        filter_orders = session().query(OrdersTable).offset(offset).limit(size)
         order_list = [
             {
                 "id": order.id,
@@ -109,7 +128,7 @@ def get_all_orders(page: int = 1, size: int = 10):
             }
             for order in filter_orders
         ]
-        Session().close()
+        session().close()
         return {
             "message": "Orders fetched",
             "success": True,
@@ -130,11 +149,15 @@ def get_all_orders(page: int = 1, size: int = 10):
 
 @app.get("/orders/{order_id}")
 def get_order_by_order_id(order_id):
+    """
+    Getting order by its id.
+    Returns:
+        dict: Dict of successful/failed api response
+    """
     try:
-        Session, engine = connect_db()
-        if Session is None:
+        if session is None:
             raise "Failed to connect to database"
-        filter_orders = Session().query(OrdersTable).filter_by(id=order_id).scalar()
+        filter_orders = session().query(OrdersTable).filter_by(id=order_id).scalar()
         order = {
             "id": filter_orders.id,
             "customer_id": filter_orders.customer_id,
@@ -142,7 +165,7 @@ def get_order_by_order_id(order_id):
             "order_priority": filter_orders.order_priority,
             "payment_method": filter_orders.payment_method
         }
-        Session().close()
+        session().close()
         return {
             "message": "Order fetched",
             "success": True,
@@ -158,13 +181,20 @@ def get_order_by_order_id(order_id):
 
 
 @app.get("/products/")
-def get_all_products(page: int = 1, size: int = 10):
+def get_all_products(page: int = 1, size: int = 25):
+    """
+    Getting all products. Defaults to first 25 products.
+    Args:
+        page (int, optional): _description_. Defaults to 1.
+        size (int, optional): _description_. Defaults to 25.
+    Returns:
+        dict: Dict of successful/failed api response
+    """
     try:
-        Session, engine = connect_db()
-        if Session is None:
+        if session is None:
             raise "Failed to connect to database"
         offset = (page - 1) * size
-        filter_products = Session().query(Products).offset(offset).limit(size)
+        filter_products = session().query(Products).offset(offset).limit(size)
         product_list = [
             {
                 "id": product.id,
@@ -173,7 +203,7 @@ def get_all_products(page: int = 1, size: int = 10):
             }
             for product in filter_products
         ]
-        Session().close()
+        session().close()
         return {
             "message": "Products fetched",
             "success": True,
@@ -192,20 +222,15 @@ def get_all_products(page: int = 1, size: int = 10):
         }
 
 
-def get_session() -> Session:
-    try:
-        Session, engine = connect_db()
-        if Session is None:
-            raise "Failed to connect to database"
-        return Session()
-    except Exception as e:
-        raise "Failed to connect to database"
-
-
 @app.get("/analytics/top-products/")
 def get_top_products():
+    """
+    Getting top products
+    Returns:
+        dict: Dict of successful/failed api response
+    """
     try:
-        session = get_session()
+        session = session
         top_products = product_performance(session)
         session.close()
 
@@ -226,19 +251,22 @@ def get_top_products():
 
 @app.get("/analytics/revenue/")
 def get_total_profit_revenue():
+    """
+    Getting total profits 
+    Returns:
+        dict: Dict of successful/failed api response
+    """
     try:
-        session = get_session()
-        total__revenue = order_analysis(session)
-        session.close()
+        total__revenue = order_analysis(session=session())
         return {
             "message": "Products fetched",
             "success": True,
             "data": total__revenue,
         }
     except Exception as e:
-        logging.error(f"Unexpected error in get_total_profit_revenue: {str(e)}")
+        logging.error("Unexpected error in get_total_profit_revenue %s", str(e))
         return {
-            "message": "An unexpected error occurred",
+            "message": f"An error occurred. Details: {str(e)}",
             "success": False,
             "data": None
         }
@@ -246,10 +274,13 @@ def get_total_profit_revenue():
 
 @app.get("/analytics/discount-impact/")
 def get_discount_impact():
+    """
+    Getting discounts impact
+    Returns:
+        dict: Dict of successful/failed api response
+    """
     try:
-        session = get_session()
-        impact = discount_impact(session)
-        session.close()
+        impact = discount_impact(session=session())
 
         return {
             "message": "Discount impact data fetched successfully",
@@ -257,18 +288,9 @@ def get_discount_impact():
             "data": impact,
         }
     except Exception as e:
-        logging.error(f"Unexpected error in get_discount_impact: {str(e)}")
+        logging.error("Unexpected error in get_discount_impact %s", str(e))
         return {
-            "message": "An unexpected error occurred",
+            "message": f"An error occurred. Details: {str(e)}",
             "success": False,
             "data": None
         }
-=======
-from fastapi import FastAPI
-from api.routes import router
-
-app = FastAPI(title="E-commerce Backend API", docs_url="/docs")
-
-# Include API routes
-app.include_router(router)
->>>>>>> 7395a4a75b210c7aee5889ae024bdee5af5b6fad
