@@ -21,24 +21,6 @@ This project provides a comprehensive API for accessing and analyzing e-commerce
 - PostgreSQL database
 - Python dependencies (see Installation)
 
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Data-Epic/database-fundamentals/tree/ecommerce-api
-   cd database-fundamentals
-   ```
-
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
-
-3. Install dependencies:
-   ```bash
-   pip install .
-   ```
 ## Database table schema
 This is how my tables relate with one another
 
@@ -134,20 +116,6 @@ ecommerce_api/
 ```
 
 
-
-## Error Handling
-
-The API implements comprehensive error handling for database connection issues and unexpected errors. All endpoints return consistent response structures with appropriate success/failure indicators and error messages.
-
-Response Format:
-```json
-{
-  "message": "Status message",
-  "success": true/false,
-  "data": {...}  // or null in case of errors
-}
-```
-
 ## Database Models
 
 The application uses SQLAlchemy ORM with the following models:
@@ -163,8 +131,4 @@ The application uses SQLAlchemy ORM with the following models:
 - Add more advanced analytics capabilities
 - Improve error handling with specific error types
 - Add unit and integration tests
-
-
-## Author
-
-Damilola Adeniyi - adeniiyidamilola246@gmail.com
+"# Ecommerce_api" 
