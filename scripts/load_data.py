@@ -21,7 +21,7 @@ def load_data():
     All columns in the dataframe are mapped to different tables
     Relationships and constriants are also well defined.
     """
-    Session, engine = connect_db()
+    Session, _ = connect_db()
     database_df = pd.read_csv(FILEPATH)
     database_df = database_df.dropna().reset_index()
 

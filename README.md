@@ -48,6 +48,7 @@ ecommerce_api/
     ├── images/
     │   ├── Ecommerce Database Project Process Map.jpg
     │   ├── ecommerce database schema [MConverter.eu].png
+    │   ├── FastAPI structure.png
 ```
 
 ### Project Process Map
@@ -97,11 +98,41 @@ CREATE INDEX idx_product_sales ON OrderItems(product_id);
 
 
 ## Interacting with the project
-### Clone the PR
-`git clone https://github.com/Data-Epic/database-fundamentals.git`
+### ** Clone the PR
+```cmd
+git clone https://github.com/Data-Epic/database-fundamentals.git
+```
 
-### Run FastAPI
-Run `fastapi dev main.py` from the command line
+### **2. Install Poetry**
+```cmd
+pipx install poetry
+```
+### **3. Install Dependencies**
+```cmd
+poetry install
+```
+### **4. Activate Virtual Environment**
+```cmd
+poetry update
+```
+
+### **5. Run the API**
+```cmd
+fastapi dev main.py
+```
+## **Usage**
+### **FastAPI Swagger UI**
+Once the API is running, visit:
+```
+http://127.0.0.1:8000/docs
+```
+This provides an interactive interface to test the API endpoints.
+
+Also you can visit the link below for extensive info on the API
+```
+http://127.0.0.1:8000/redoc 
+```
+
 
 ### Examples
 1) FastAPI endpoint structure.

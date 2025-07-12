@@ -284,30 +284,32 @@ def discount_impact(session) -> list:
         .group_by(OrderItemsTable.discount)
         .order_by(desc('total_sales'))
     )
+    print(total)
     summary = [{column: to_float(value) for column,
                 value in row._mapping.items()}
                for row in total.all()]
     return summary
 
 
+
 if __name__ == '__main__':
-    # Customers Analysis Insights
-    cus_insights = customer_insights(session=Session())
-    print('CUSTOMER INSIGHTS!!!')
-    for key, value in cus_insights.items():
-        print(key, ":", value)
+    # # Customers Analysis Insights
+    # cus_insights = customer_insights(session=Session())
+    # print('CUSTOMER INSIGHTS!!!')
+    # for key, value in cus_insights.items():
+    #     print(key, ":", value)
 
-    # Products Analysis Insights
-    products_insights = product_performance(session=Session())
-    print('\n\nPRODUCT INSIGHTS!!!')
-    for key, value in products_insights.items():
-        print(key, value, '\n')
+    # # Products Analysis Insights
+    # products_insights = product_performance(session=Session())
+    # print('\n\nPRODUCT INSIGHTS!!!')
+    # for key, value in products_insights.items():
+    #     print(key, value, '\n')
 
-    # Order Analysis Insights
-    order_insights = order_analysis(session=Session())
-    print('\nORDER ANALYSIS INSIGHTS')
-    for key, value in order_insights.items():
-        print(key, value)
+    # # Order Analysis Insights
+    # order_insights = order_analysis(session=Session())
+    # print('\nORDER ANALYSIS INSIGHTS')
+    # for key, value in order_insights.items():
+    #     print(key, value)
 
     # Discount Impact Analysis
     dis_impact = discount_impact(session=Session())
