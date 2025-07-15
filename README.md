@@ -51,41 +51,44 @@ ecommerce_api/
     │   ├── FastAPI structure.png
 ```
 
-### Project Process Map
-![alt text](<images/Ecommerce Database Project Process Map.jpg>)
+### Project Flow Architecture
+![alt text](images/flow_architecture.png)
 
 ### Database Schema and Relationships
-![alt text](<images/ecommerce database schema [MConverter.eu].png>)
-
+![alt text](images/database_schema.png)
 
 ### INSIGHTS GLEANED FROM THE DATABASE.
 #### 1️⃣ Customer Insights
-```
 Q1) Total number of unique customers
+![alt text](images/Q1.png)
 Q2) Number of customers per device type (Web/Mobile)
+![alt text](images/Q2.png)
 Q3) Percentage of members vs. guest users.
-```
+![alt text](images/Q3.png)
+
 
 #### 2️⃣ Product Performance
-```
 Q4) Top 5 best-selling products based on sales.
-Q5) Top 3 product categories with the highest revenue.\
+![alt text](images/Q4.png)
+Q5) Top 3 product categories with the highest revenue.
+![alt text](images/Q5.png)
 Q6) Products with the highest profit margins.
-```
+![alt text](images/Q6.png)
 
 #### 3️⃣ Order Analysis
-```
-Q7) Average order size (quantity per order).\
-Q8) Total revenue and profit.\
+Q7) Average order size (quantity per order).
+![alt text](images/Q7.png)
+Q8) Total revenue and profit.
+![alt text](images/Q8.png)
 Q9) Percentage of orders placed with High or Critical priority.
-```
+![alt text](images/Q9.png)
 
 #### 4️⃣ Discount Impact
 Q10) Does higher discount % lead to more sales?
+![alt text](images/Q10.png)
 
 
 ### **🔹API Endpoints with FastAPI**
-
 **Endpoint	             Method	      Description**
 ```
 */customers/*	            GET	    Get all customers
@@ -149,12 +152,14 @@ http://127.0.0.1:8000/redoc
 
 ### Dependencies
 ```
-polars (>=1.24.0,<2.0.0)
 pandas (>=2.2.3,<3.0.0)
 sqlalchemy (>=2.0.38,<3.0.0)
 psycopg2 (>=2.9.10,<3.0.0)
 fastapi (>=0.115.11,<0.116.0)
 dotenv (>=0.9.9,<0.10.0)
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0" - for code formatting
 ```
 
 ## Author : Arowosegbe Victor Iyanuoluwa.

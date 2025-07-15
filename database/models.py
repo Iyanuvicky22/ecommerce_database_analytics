@@ -20,7 +20,7 @@ class CustomersTable(Base):
         Base (Class): Table declarative class.
     """
 
-    __tablename__ = "c:\Users\APIN PC\Downloads\database_project-Page-2.drawio (3).png"
+    __tablename__ = "Customers"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     customer_id = Column(String(20), unique=True)
