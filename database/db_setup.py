@@ -11,10 +11,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 from database.models import *
+from utils.logger import logger
 
 
-load_dotenv(dotenv_path='.env')
-URL = os.getenv('DB_URL')
+load_dotenv(dotenv_path=".env")
+URL = os.getenv("DB_URL")
 
 
 def connect_db():
@@ -26,12 +27,12 @@ def connect_db():
         Session = sessionmaker(bind=engine)
         Base.metadata.create_all(engine)
         # session = Session()
-        print('\n\nCongratulations!!! Database successfully connected to.\n\n') 
+        logger.info("Congratulations!!! Database successfully connected to.")
         # include logging
         return Session, engine
     except SQLAlchemyError as e:
-        print(f'Connection Error {e}')
+        logger.error(f"Connection Error: {e}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     connect_db()

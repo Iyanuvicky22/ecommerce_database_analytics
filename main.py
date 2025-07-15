@@ -5,10 +5,11 @@ Name: Arowosegbe Victor Iyanuoluwa\n
 Email: Iyanuvicky@gmail.com\n
 GitHub: https://github.com/Iyanuvicky22/projects
 """
-import logging
 from fastapi import FastAPI
 from database.crud import *
 from database.db_setup import *
+from sqlalchemy import Engine
+from utils.logger import logger
 
 app = FastAPI()
 session, engine = connect_db()
@@ -40,15 +41,15 @@ def get_all_customers(page: int = 1, size: int = 25):
         if session is None:
             raise "Failed to connect to database"
         offset = (page - 1) * size
-        filter_customers = session().query(
-            CustomersTable).offset(offset).limit(size)
+        filter_customers = session().query(CustomersTable).offset(offset).limit(size)
         customer_list = [
-            {"id": customer.id,
-             "customer_id": customer.customer_id,
-             "gender": customer.gender,
-             "device_type": customer.device_type,
-             "login_type": customer.login_type
-             }
+            {
+                "id": customer.id,
+                "customer_id": customer.customer_id,
+                "gender": customer.gender,
+                "device_type": customer.device_type,
+                "login_type": customer.login_type,
+            }
             for customer in filter_customers
         ]
         session().close()
@@ -62,11 +63,11 @@ def get_all_customers(page: int = 1, size: int = 25):
             },
         }
     except Exception as e:
-        logging.error("Unexpected error in get_all_customers:%s", str(e))
+        logger.error("Unexpected error in get_all_customers:%s", str(e))
         return {
-            "message": "An unexpected error occurred",
+            "message": f"An unexpected error occurred: {e}",
             "success": False,
-            "data": None
+            "data": None,
         }
 
 
@@ -80,14 +81,16 @@ def get_customers_by_customer_id(customer_id):
     try:
         if session is None:
             raise "Failed to connect to database"
-        filter_customers = session().query(CustomersTable).filter_by(
-            customer_id=customer_id).scalar()
-        customer = {"id": filter_customers.id,
-                    "customer_id": filter_customers.customer_id,
-                    "gender": filter_customers.gender,
-                    "device_type": filter_customers.device_type,
-                    "login_type": filter_customers.login_type
-                    }
+        filter_customers = (
+            session().query(CustomersTable).filter_by(customer_id=customer_id).scalar()
+        )
+        customer = {
+            "id": filter_customers.id,
+            "customer_id": filter_customers.customer_id,
+            "gender": filter_customers.gender,
+            "device_type": filter_customers.device_type,
+            "login_type": filter_customers.login_type,
+        }
         session().close()
         return {
             "message": "Customer fetched",
@@ -95,11 +98,11 @@ def get_customers_by_customer_id(customer_id):
             "data": customer,
         }
     except Exception as e:
-        logging.error("Unexpected error in get_all_products: %s", {str(e)})
+        logger.error("Unexpected error in get_all_products: %s", {str(e)})
         return {
-            "message": "An unexpected error occurred",
+            "message": f"An unexpected error occurred: {e}",
             "success": False,
-            "data": None
+            "data": None,
         }
 
 
@@ -124,7 +127,7 @@ def get_all_orders(page: int = 1, size: int = 50):
                 "customer_id": order.customer_id,
                 "order_date": order.order_date,
                 "order_priority": order.order_priority,
-                "payment_method": order.payment_method
+                "payment_method": order.payment_method,
             }
             for order in filter_orders
         ]
@@ -139,11 +142,11 @@ def get_all_orders(page: int = 1, size: int = 50):
             },
         }
     except Exception as e:
-        logging.error(f"Unexpected error in get_all_products: {str(e)}")
+        logger.error(f"Unexpected error in get_all_products: {str(e)}")
         return {
-            "message": "An unexpected error occurred",
+            "message": f"An unexpected error occurred: {e}",
             "success": False,
-            "data": None
+            "data": None,
         }
 
 
@@ -163,7 +166,7 @@ def get_order_by_order_id(order_id):
             "customer_id": filter_orders.customer_id,
             "order_date": filter_orders.order_date,
             "order_priority": filter_orders.order_priority,
-            "payment_method": filter_orders.payment_method
+            "payment_method": filter_orders.payment_method,
         }
         session().close()
         return {
@@ -172,11 +175,11 @@ def get_order_by_order_id(order_id):
             "data": order,
         }
     except Exception as e:
-        logging.error(f"Unexpected error in get_all_products: {str(e)}")
+        logger.error(f"Unexpected error in get_all_products: {str(e)}")
         return {
-            "message": "An unexpected error occurred",
+            "message": f"An unexpected error occurred: {e}",
             "success": False,
-            "data": None
+            "data": None,
         }
 
 
@@ -199,7 +202,7 @@ def get_all_products(page: int = 1, size: int = 25):
             {
                 "id": product.id,
                 "product_category": product.product_category,
-                "product_name": product.product_name
+                "product_name": product.product_name,
             }
             for product in filter_products
         ]
@@ -214,11 +217,11 @@ def get_all_products(page: int = 1, size: int = 25):
             },
         }
     except Exception as e:
-        logging.error(f"Unexpected error in get_all_products: {str(e)}")
+        logger.error(f"Unexpected error in get_all_products: {str(e)}")
         return {
-            "message": "An unexpected error occurred",
+            "message": f"An unexpected error occurred: {e}",
             "success": False,
-            "data": None
+            "data": None,
         }
 
 
@@ -241,18 +244,18 @@ def get_top_products():
         }
 
     except Exception as e:
-        logging.error(f"Unexpected error in get_top_products: {str(e)}")
+        logger.error(f"Unexpected error in get_top_products: {str(e)}")
         return {
-            "message": "An unexpected error occurred",
+            "message": f"An unexpected error occurred: {e}",
             "success": False,
-            "data": None
+            "data": None,
         }
 
 
 @app.get("/analytics/revenue/")
 def get_total_profit_revenue():
     """
-    Getting total profits 
+    Getting total profits
     Returns:
         dict: Dict of successful/failed api response
     """
@@ -264,11 +267,11 @@ def get_total_profit_revenue():
             "data": total__revenue,
         }
     except Exception as e:
-        logging.error("Unexpected error in get_total_profit_revenue %s", str(e))
+        logger.error("Unexpected error in get_total_profit_revenue %s", str(e))
         return {
             "message": f"An error occurred. Details: {str(e)}",
             "success": False,
-            "data": None
+            "data": None,
         }
 
 
@@ -288,9 +291,9 @@ def get_discount_impact():
             "data": impact,
         }
     except Exception as e:
-        logging.error("Unexpected error in get_discount_impact %s", str(e))
+        logger.error("Unexpected error in get_discount_impact %s", str(e))
         return {
             "message": f"An error occurred. Details: {str(e)}",
             "success": False,
-            "data": None
+            "data": None,
         }

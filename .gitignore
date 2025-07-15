@@ -1,4 +1,38 @@
-*.txt
+# Virtual environment
+.venv/
+
+# Environment file
 *.env
-*venv/
-*__pycache__
+
+# Poetry cache
+.cache/pypoetry/
+
+# Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+
+# Distribution files
+dist/
+build/
+*.egg-info/
+
+# IDE/editor specific files
+.vscode/
+.idea/
+
+# Log files
+*.log
+
+# Backup files
+*~
+.*~
+
+# Operating system specific files (e.g., macOS, Windows)
+.DS_Store
+Thumbs.db
+
+# Other Files to ignore.
+*.txt
+poetry.lock
+pypoetry.toml

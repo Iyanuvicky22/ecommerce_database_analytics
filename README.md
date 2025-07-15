@@ -115,11 +115,18 @@ poetry install
 ```cmd
 poetry update
 ```
+### **5. Setup Local DB
+```
+In env file: (I used postgres)
+DB_URL ='postgresql://user:password@host:port/db_name'
+Check the link below for help.
+[text](https://www.strongdm.com/blog/postgres-create-database#:~:text=Open%20a%20terminal%20on%20Unix,%E2%80%9Cpostgres%E2%80%9D%20with%20that%20name.)
 
 ### **5. Run the API**
 ```cmd
-fastapi dev main.py
+poetry run fastapi dev main.py
 ```
+
 ## **Usage**
 ### **FastAPI Swagger UI**
 Once the API is running, visit:
@@ -139,9 +146,11 @@ http://127.0.0.1:8000/redoc
 ![alt text](<images/FastAPI structure.png>)
 
 ### Dependencies
-`polars (>=1.24.0,<2.0.0)`,\
-`pandas (>=2.2.3,<3.0.0)`,\
-`sqlalchemy (>=2.0.38,<3.0.0)`,\
-`psycopg2 (>=2.9.10,<3.0.0)`,\
-`fastapi (>=0.115.11,<0.116.0)`,\
-`dotenv (>=0.9.9,<0.10.0)`
+```
+polars (>=1.24.0,<2.0.0)
+pandas (>=2.2.3,<3.0.0)
+sqlalchemy (>=2.0.38,<3.0.0)
+psycopg2 (>=2.9.10,<3.0.0)
+fastapi (>=0.115.11,<0.116.0)
+dotenv (>=0.9.9,<0.10.0)
+```
