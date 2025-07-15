@@ -59,33 +59,38 @@ ecommerce_api/
 
 ### INSIGHTS GLEANED FROM THE DATABASE.
 #### 1️⃣ Customer Insights
-Q1) Total number of unique customers
+* Q1) Total number of unique customers
 ![alt text](images/Q1.png)
-Q2) Number of customers per device type (Web/Mobile)
+* Q2) Number of customers per device type (Web/Mobile)
 ![alt text](images/Q2.png)
-Q3) Percentage of members vs. guest users.
+* Q3) Percentage of members vs. guest users.
 ![alt text](images/Q3.png)
 
 
 #### 2️⃣ Product Performance
-Q4) Top 5 best-selling products based on sales.
+* Q4) Top 5 best-selling products based on sales.
 ![alt text](images/Q4.png)
-Q5) Top 3 product categories with the highest revenue.
+* Q5) Top 3 product categories with the highest revenue.
 ![alt text](images/Q5.png)
-Q6) Products with the highest profit margins.
+* Q6) Products with the highest profit margins.
 ![alt text](images/Q6.png)
 
 #### 3️⃣ Order Analysis
-Q7) Average order size (quantity per order).
+* Q7) Average order size (quantity per order).
 ![alt text](images/Q7.png)
-Q8) Total revenue and profit.
+* Q8) Total revenue and profit.
 ![alt text](images/Q8.png)
-Q9) Percentage of orders placed with High or Critical priority.
+* Q9) Percentage of orders placed with High or Critical priority.
 ![alt text](images/Q9.png)
 
 #### 4️⃣ Discount Impact
-Q10) Does higher discount % lead to more sales?
+* Q10) Does higher discount % lead to more sales?
 ![alt text](images/Q10.png)
+```
+The optimum discount rate that yielded most sales is 30%. 
+Higher than does not translate to more sales. 
+50% and 10% discounts yielded the least two sales in ranking.
+```
 
 
 ### **🔹API Endpoints with FastAPI**
