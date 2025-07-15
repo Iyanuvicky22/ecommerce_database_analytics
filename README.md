@@ -60,23 +60,28 @@ ecommerce_api/
 
 ### INSIGHTS GLEANED FROM THE DATABASE.
 #### 1️⃣ Customer Insights
-Total number of unique customers.\
-Number of customers per device type (Web/Mobile).\
-Percentage of members vs. guest users.
+```
+Q1) Total number of unique customers
+Q2) Number of customers per device type (Web/Mobile)
+Q3) Percentage of members vs. guest users.
+```
 
 #### 2️⃣ Product Performance
-Top 5 best-selling products based on sales.\
-Top 3 product categories with the highest revenue.\
-Products with the highest profit margins.
+```
+Q4) Top 5 best-selling products based on sales.
+Q5) Top 3 product categories with the highest revenue.\
+Q6) Products with the highest profit margins.
+```
 
 #### 3️⃣ Order Analysis
-Average order size (quantity per order).\
-Total revenue and profit.\
-Percentage of orders placed with High or Critical priority.
+```
+Q7) Average order size (quantity per order).\
+Q8) Total revenue and profit.\
+Q9) Percentage of orders placed with High or Critical priority.
+```
 
 #### 4️⃣ Discount Impact
-Does higher discount % lead to more sales?\
-(Hint: Compare Sales vs. Discount using GROUP BY discount)*
+Q10) Does higher discount % lead to more sales?
 
 
 ### **🔹API Endpoints with FastAPI**
@@ -91,6 +96,8 @@ Does higher discount % lead to more sales?\
 */analytics/top-products/*	GET	    Get top-selling products
 */analytics/revenue/*	    GET	    Get total revenue & profit
 ```
+##### FastAPI endpoint structure.
+![alt text](<images/FastAPI structure.png>)
 
 ### **🔹Implemented Indexing & Query Optimization**
 CREATE INDEX idx_order_customer ON Orders(customer_id);\
@@ -140,11 +147,6 @@ Also you can visit the link below for extensive info on the API
 http://127.0.0.1:8000/redoc 
 ```
 
-
-### Examples
-1) FastAPI endpoint structure.
-![alt text](<images/FastAPI structure.png>)
-
 ### Dependencies
 ```
 polars (>=1.24.0,<2.0.0)
@@ -154,3 +156,5 @@ psycopg2 (>=2.9.10,<3.0.0)
 fastapi (>=0.115.11,<0.116.0)
 dotenv (>=0.9.9,<0.10.0)
 ```
+
+## Author : Arowosegbe Victor Iyanuoluwa.

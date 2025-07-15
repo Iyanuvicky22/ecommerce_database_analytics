@@ -31,7 +31,7 @@ def connect_db():
         # include logging
         return Session, engine
     except SQLAlchemyError as e:
-        logger.error(f"Connection Error: {e}")
+        logger.error("Connection Error: ", e)
 
 
 if __name__ == "__main__":

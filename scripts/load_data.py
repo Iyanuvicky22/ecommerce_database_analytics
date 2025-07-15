@@ -13,7 +13,7 @@ from database.db_setup import OrderItemsTable, OrdersTable
 
 pd.set_option("display.max_columns", None)
 
-FILEPATH = "data/ecommerce_dataset.csv"
+FILEPATH = "../data/ecommerce_dataset.csv"
 
 
 def load_data():
@@ -25,14 +25,14 @@ def load_data():
     """
     Session, _ = connect_db()
     database_df = pd.read_csv(FILEPATH)
-    database_df = database_df.dropna().reset_index()
+    database_df = database_df.dropna().reset_index(drop=True)
 
     with Session.begin() as session:
         for _, row in database_df.iterrows():
             customer = (
                 session.query(CustomersTable)
                 .filter_by(customer_id=str(row["Customer_Id"]))
-                .one_or_none()
+                .first()
             )
             if not customer:
                 customer = CustomersTable(
@@ -49,7 +49,7 @@ def load_data():
                     product_category=row["Product_Category"],
                     product_name=row["Product"],
                 )
-                .one_or_none()
+                .first()
             )
 
             if not product:
@@ -58,27 +58,18 @@ def load_data():
                     product_name=row["Product"],
                 )
                 session.add(product)
-       
-            order = (session.query(OrdersTable)
-                     .filter_by(
-                        customer_id=customer.customer_id,
-                        order_date=row['Order_Date'],
-                        payment_method=row['Payment_method'],
-                    )
-                    .one_or_none()
+
+            order = OrdersTable(
+                customer_id=customer.customer_id,
+                order_date=row["Order_Date"],
+                order_priority=row["Order_Priority"],
+                payment_method=row["Payment_method"],
             )
-            if not order:
-                order = OrdersTable(
-                    customer_id=customer.customer_id,
-                    order_date=row["Order_Date"],
-                    order_priority=row["Order_Priority"],
-                    payment_method=row["Payment_method"],
-                )
             session.add(order)
-            session.flush()
+
             order_item = OrderItemsTable(
-                order_id=order,
-                product_id=product,
+                order_id=order.id,
+                product_id=product.id,
                 quantity=row["Quantity"],
                 discount=row["Discount"],
                 sales=row["Sales"],
@@ -89,5 +80,5 @@ def load_data():
         session.commit()
 
 
-if __name__ == "__main__":
-    load_data()
+# if __name__ == "__main__":
+#     load_data()
