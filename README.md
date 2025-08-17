@@ -1,6 +1,11 @@
 # Project: E-commerce Backend System with PostgreSQL & FastAPI 
 ## Project Overview
-As a data engineer for an e-commerce website, you are given a CSV dataset containing raw transactional data. Your task is to design and implement a robust data pipeline that efficiently processes, stores, and exposes insights from this data. To achieve this, you first model the data into four key tables: Orders, Customers, Products, and Order Items. The Customers table holds user details, while the Products table contains product information. The Orders table tracks each transaction, linking customers to their purchases, and the Order Items table breaks down each order into individual product purchases, capturing quantities and prices. Once the schema is defined, you store the structured data in a PostgreSQL database, optimizing it with indexing and foreign key relationships for efficient queries. Next, you perform various computations, such as calculating total sales, customer lifetime value, and product performance metrics, directly in the database. To expose this data, you build a FastAPI endpoint that allows users to query and visualize key analytics, such as top-selling products, customer purchase behavior, and revenue trends.
+As a data engineer for an e-commerce website, given a CSV dataset containing raw transactional data. My task was to design and implement a robust data pipeline that efficiently processes, stores, and exposes insights from this data. To achieve this, I first modelled the data into four key tables: Orders, Customers, Products, and Order Items. 
+The Customers table holds user details, while the Products table contains product information.
+The Orders table tracks each transaction, linking customers to their purchases, and the Order Items table breaks down each order into individual product purchases, capturing quantities and prices. 
+Once the schema is defined, I store the structured data in a PostgreSQL database, optimizing it with indexing and foreign key relationships for efficient queries. 
+Next, I performed various computations, such as calculating total sales, customer lifetime value, and product performance metrics, directly in the database. 
+To expose this data, I built a FastAPI endpoint that enables users to query and visualize key analytics, including top-selling products, customer purchase behavior, and revenue trends.
 
 ## Prerequisites:
 Before starting this project, you should:
